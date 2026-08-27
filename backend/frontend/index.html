@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Ray Image Enhancement</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .image-container { display: flex; gap: 20px; margin-top: 20px; }
+        .image-card { flex: 1; text-align: center; }
+        img { max-width: 100%; border-radius: 6px; border: 1fr solid #ddd; display: none; }
+        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🦴 X-Ray Image Enhancement Studio</h2>
+    
+    <div class="controls">
+        <div>
+            <label><b>Select X-Ray Image:</b></label><br><br>
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+        <div>
+            <label><b>Cutoff Radius:</b> <span id="cutoffVal">30</span></label>
+            <input type="range" id="cutoffRadius" min="5" max="100" value="30" oninput="document.getElementById('cutoffVal').innerText=this.value"><br><br>
+
+            <label><b>Blend Alpha:</b> <span id="alphaVal">0.65</span></label>
+            <input type="range" id="blendAlpha" min="0" max="1" step="0.05" value="0.65" oninput="document.getElementById('alphaVal').innerText=this.value">
+        </div>
+    </div>
+
+    <button onclick="uploadAndEnhance()">Enhance Image</button>
+
+    <div class="image-container">
+        <div class="image-card">
+            <h3>Original X-Ray</h3>
+            <img id="originalPreview" alt="Original Image">
+        </div>
+        <div class="image-card">
+            <h3>Enhanced Result</h3>
+            <img id="enhancedPreview" alt="Enhanced Image">
+        </div>
+    </div>
+</div>
+
+<script>
+    async function uploadAndEnhance() {
+        const fileInput = document.getElementById('imageInput');
+        if (fileInput.files.length === 0) {
+            alert("Please select an image file first!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        formData.append("cutoff_radius", document.getElementById('cutoffRadius').value);
+        formData.append("blend_alpha", document.getElementById('blendAlpha').value);
+
+        // Preview Original Image
+        const originalImg = document.getElementById('originalPreview');
+        originalImg.src = URL.createObjectURL(fileInput.files[0]);
+        originalImg.style.display = 'block';
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/enhance", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const enhancedImg = document.getElementById('enhancedPreview');
+                enhancedImg.src = "data:image/png;base64," + hexToBase64(data.image_bytes);
+                enhancedImg.style.display = 'block';
+            } else {
+                alert("Error from server: " + response.statusText);
+            }
+        } catch (error) {
+            alert("Could not connect to backend server: " + error);
+        }
+    }
+
+    function hexToBase64(hexstring) {
+        return btoa(hexstring.match(/\w{2}/g).map(a => String.fromCharCode(parseInt(a, 16))).join(""));
+    }
+</script>
+
+</body>
+</html>
