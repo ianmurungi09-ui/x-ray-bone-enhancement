@@ -1,0 +1,4 @@
+xray_project/
+├── xray_input.png        <-- Put your original X-ray image here
+├── run_enhancement.py    <-- Put your Python script here
+└── output/               <-- Generated results folder
