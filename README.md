@@ -1,5 +1,5 @@
 
-🦴 Bone Edge Enhancement Tools
+🦴 Bone Edge Enhancement Tools =x_ray
 
 An interactive computer vision web application designed to isolate and enhance subtle bone edges, hairline fractures, and high-frequency structural details in X-ray scans. The processing engine utilizes **2D Fourier High-Pass Filtering** combined with spatial-domain contrast normalization.
 
