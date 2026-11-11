@@ -22,4 +22,4 @@ x-ray-bone-enhancement/
 ├── app.py              # Main Streamlit web application & Fourier processing engine
 ├── requirements.txt    # Python dependencies required for deployment
 └── README.md           # Project documentation
-murungi09@gmail.com
+ianmurungi09@gmail.com
